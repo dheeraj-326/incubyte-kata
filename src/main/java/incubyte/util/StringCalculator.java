@@ -11,6 +11,7 @@ public class StringCalculator {
 
     public int Add(String numbers) throws InvalidAdditionInputException {
         int sum = 0;
+        StringBuilder exceptionMessageBuilder = null;
         if (numbers == null)
             throw new InvalidAdditionInputException("InvalidInput: null");
         if (numbers.isEmpty())
@@ -19,24 +20,33 @@ public class StringCalculator {
             try {
                 int number = Integer.parseInt(numbers);
                 if (number < 0)
-                    throw new InvalidAdditionInputException("negatives not allowed");
+                    throw new InvalidAdditionInputException("negatives not allowed: " + number);
                 sum = number;
             } catch (NumberFormatException ne) {
                 throw new InvalidAdditionInputException("InvalidInput: Not a number");
             }
         } else {
             ArrayList<String> parts = splitByDelimiter(numbers);
+            boolean firstNegative = true;
             try {
                 for (String part : parts) {
                     int number = Integer.parseInt(part);
-                    if (number < 0)
-                        throw new InvalidAdditionInputException("negatives not allowed");
+                    if (number < 0) {
+                        if (!firstNegative)
+                            exceptionMessageBuilder.append(", ");
+                        else
+                            exceptionMessageBuilder = new StringBuilder("negatives not allowed: ");
+                        exceptionMessageBuilder.append(number);
+                        firstNegative = false;
+                    }
                     sum += number;
                 }
             } catch (NumberFormatException ne) {
                 throw new InvalidAdditionInputException("InvalidInput: Not a number");
             }
         }
+        if (exceptionMessageBuilder != null)
+            throw new InvalidAdditionInputException(exceptionMessageBuilder.toString());
         return sum;
     }
 

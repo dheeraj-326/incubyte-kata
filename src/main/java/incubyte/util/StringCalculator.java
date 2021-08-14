@@ -21,7 +21,6 @@ public class StringCalculator {
                 for (String part : parts) {
                     sum += Integer.parseInt(part);
                 }
-                return Integer.parseInt(parts[0]) + Integer.parseInt(parts[1]);
             } catch (NumberFormatException ne) {
                 throw new InvalidAdditionInputException("InvalidInput: Not a number");
             }

@@ -54,7 +54,7 @@ public class StringCalculatorTests {
     }
 
     @Test
-    public void testWithMultipleDelimiters_MustReturnSum() throws InvalidAdditionInputException {
+    public void testWithMultipleDelimiters_1_MustReturnSum() throws InvalidAdditionInputException {
         StringBuilder inputBuilder = new StringBuilder("");
         int expectedOutput = 0;
         for (int i = 0; i < 5; i++) {
@@ -72,14 +72,32 @@ public class StringCalculatorTests {
     }
 
     @Test
+    public void testWithMultipleDelimiters_2_MustReturnSum() throws InvalidAdditionInputException {
+        StringBuilder inputBuilder = new StringBuilder("");
+        int expectedOutput = 0;
+        for (int i = 0; i < 5; i++) {
+            if (i != 0) {
+                int selector = (int) Math.random();
+                if (selector % 3 == 0)
+                    inputBuilder.append(',');
+                else if (selector % 3 == 1)
+                    inputBuilder.append('\n');
+                else
+                    inputBuilder.append(';');
+            }
+            inputBuilder.append(i);
+            expectedOutput += i;
+        }
+        int output = stringCalculator.Add(inputBuilder.toString());
+        Assertions.assertEquals(expectedOutput, output);
+    }
+
+    @Test
     public void testWithNegativeNumbers_MustThrowException() throws InvalidAdditionInputException {
         StringBuilder inputBuilder = new StringBuilder("");
         for (int i = 0; i < 5; i++) {
             if (i != 0) {
-                if (((int) Math.random()) % 2 == 0)
-                    inputBuilder.append(',');
-                else
-                    inputBuilder.append('\n');
+                inputBuilder.append('\n');
             }
             inputBuilder.append(i);
         }

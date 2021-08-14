@@ -7,7 +7,7 @@ import java.util.Arrays;
 
 public class StringCalculator {
 
-    private final String[] delimiters = new String[] { ",", "\n" };
+    private final String[] delimiters = new String[] { ",", "\n", ";" };
 
     public int Add(String numbers) throws InvalidAdditionInputException {
         int sum = 0;

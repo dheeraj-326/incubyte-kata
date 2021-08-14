@@ -41,6 +41,8 @@ public class StringCalculator {
             if (Arrays.stream(delimiters).anyMatch(delimiter -> Character.toString(character).equals(delimiter))) {
                 numbers.add(number.toString());
                 number = new StringBuilder("");
+            } else {
+                number.append(character);
             }
         }
         numbers.add(number.toString());

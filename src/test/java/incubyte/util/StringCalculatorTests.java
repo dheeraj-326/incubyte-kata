@@ -12,7 +12,7 @@ public class StringCalculatorTests {
     }
 
     @Test
-    void testAcceptsEmptyString_ReturnsZero() {
+    public void testAcceptsEmptyString_ReturnsZero() {
         String input = "";
         int expectedOutput = 0;
         int output = stringCalculator.Add(input);
@@ -20,7 +20,7 @@ public class StringCalculatorTests {
     }
 
     @Test
-    void testAddTwoPositiveNumbers_MustReturnSum() {
+    public void testAddTwoPositiveNumbers_MustReturnSum() {
         int firstNumber = 1;
         int secondNumber = 2;
         int expectedOutput = firstNumber + secondNumber;

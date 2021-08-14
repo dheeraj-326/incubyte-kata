@@ -38,4 +38,18 @@ public class StringCalculatorTests {
         int output = stringCalculator.Add(input);
         Assertions.assertEquals(expectedOutput, output);
     }
+
+    @Test
+    public void testMoreThanTwoNumbers_MustReturnSum() throws InvalidAdditionInputException {
+        StringBuilder inputBuilder = new StringBuilder("");
+        int expectedOutput = 0;
+        for (int i = 0; i < 5; i++) {
+            if (i != 0)
+                inputBuilder.append(',');
+            inputBuilder.append(i);
+            expectedOutput += i;
+        }
+        int output = stringCalculator.Add(inputBuilder.toString());
+        Assertions.assertEquals(expectedOutput, output);
+    }
 }

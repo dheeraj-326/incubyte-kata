@@ -4,23 +4,28 @@ import incubyte.exception.InvalidAdditionInputException;
 
 public class StringCalculator {
     public int Add(String numbers) throws InvalidAdditionInputException {
+        int sum = 0;
         if (numbers == null)
             throw new InvalidAdditionInputException("InvalidInput: null");
         if (numbers.isEmpty())
-            return 0;
-        if (!numbers.contains(",")) {
+            sum = 0;
+        else if (!numbers.contains(",")) {
             try {
-                return Integer.parseInt(numbers);
+                sum = Integer.parseInt(numbers);
             } catch (NumberFormatException ne) {
                 throw new InvalidAdditionInputException("InvalidInput: Not a number");
             }
         } else {
             String[] parts = numbers.split(",");
             try {
+                for (String part : parts) {
+                    sum += Integer.parseInt(part);
+                }
                 return Integer.parseInt(parts[0]) + Integer.parseInt(parts[1]);
             } catch (NumberFormatException ne) {
                 throw new InvalidAdditionInputException("InvalidInput: Not a number");
             }
         }
+        return sum;
     }
 }

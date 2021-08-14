@@ -25,7 +25,10 @@ public class StringCalculator {
             ArrayList<String> parts = splitByDelimiter(numbers);
             try {
                 for (String part : parts) {
-                    sum += Integer.parseInt(part);
+                    int number = Integer.parseInt(part);
+                    if (number < 0)
+                        throw new InvalidAdditionInputException("negatives not allowed");
+                    sum += number;
                 }
             } catch (NumberFormatException ne) {
                 throw new InvalidAdditionInputException("InvalidInput: Not a number");

@@ -70,4 +70,25 @@ public class StringCalculatorTests {
         int output = stringCalculator.Add(inputBuilder.toString());
         Assertions.assertEquals(expectedOutput, output);
     }
+
+    @Test
+    public void testWithNegativeNumber_MustThrowException() throws InvalidAdditionInputException {
+        StringBuilder inputBuilder = new StringBuilder("");
+        for (int i = 0; i < 5; i++) {
+            if (i != 0) {
+                if (((int) Math.random()) % 2 == 0)
+                    inputBuilder.append(',');
+                else
+                    inputBuilder.append('\n');
+            }
+            inputBuilder.append(i);
+        }
+        inputBuilder.append(',');
+        inputBuilder.append("-1");
+
+        InvalidAdditionInputException exception = Assertions.assertThrows(InvalidAdditionInputException.class, () -> {
+            int output = stringCalculator.Add(inputBuilder.toString());
+        });
+        Assertions.assertEquals("negatives not allowed", exception.getMessage());
+    }
 }

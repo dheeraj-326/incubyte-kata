@@ -72,7 +72,7 @@ public class StringCalculatorTests {
     }
 
     @Test
-    public void testWithNegativeNumber_MustThrowException() throws InvalidAdditionInputException {
+    public void testWithNegativeNumbers_MustThrowException() throws InvalidAdditionInputException {
         StringBuilder inputBuilder = new StringBuilder("");
         for (int i = 0; i < 5; i++) {
             if (i != 0) {
@@ -88,6 +88,16 @@ public class StringCalculatorTests {
 
         InvalidAdditionInputException exception = Assertions.assertThrows(InvalidAdditionInputException.class, () -> {
             int output = stringCalculator.Add(inputBuilder.toString());
+        });
+        Assertions.assertEquals("negatives not allowed", exception.getMessage());
+    }
+
+    @Test
+    public void testWithNegativeNumber_MustThrowException() throws InvalidAdditionInputException {
+        String input = "-1";
+
+        InvalidAdditionInputException exception = Assertions.assertThrows(InvalidAdditionInputException.class, () -> {
+            int output = stringCalculator.Add(input);
         });
         Assertions.assertEquals("negatives not allowed", exception.getMessage());
     }

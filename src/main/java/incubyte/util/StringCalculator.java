@@ -1,4 +1,4 @@
-package incubyte;
+package incubyte.util;
 
 public class StringCalculator {
     public int Add(String numbers) {

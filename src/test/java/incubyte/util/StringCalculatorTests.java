@@ -1,6 +1,9 @@
 package incubyte.util;
 
 import incubyte.exception.InvalidAdditionInputException;
+import org.hamcrest.MatcherAssert;
+import org.hamcrest.core.IsEqual;
+import org.junit.Assert;
 import org.junit.Test;
 import org.junit.jupiter.api.Assertions;
 
@@ -107,7 +110,7 @@ public class StringCalculatorTests {
         InvalidAdditionInputException exception = Assertions.assertThrows(InvalidAdditionInputException.class, () -> {
             int output = stringCalculator.Add(inputBuilder.toString());
         });
-        Assertions.assertEquals("negatives not allowed", exception.getMessage());
+        MatcherAssert.assertThat(exception.getMessage().contains("negatives not allowed"), new IsEqual<>(true));
     }
 
     @Test
@@ -117,6 +120,38 @@ public class StringCalculatorTests {
         InvalidAdditionInputException exception = Assertions.assertThrows(InvalidAdditionInputException.class, () -> {
             int output = stringCalculator.Add(input);
         });
-        Assertions.assertEquals("negatives not allowed", exception.getMessage());
+        MatcherAssert.assertThat(exception.getMessage().contains("negatives not allowed"), new IsEqual<>(true));
+    }
+
+    @Test
+    public void testWithNegativeNumber_MustThrowExceptionWithNegativeNumbers() throws InvalidAdditionInputException {
+        String input = "-1";
+        StringBuilder inputBuilder = new StringBuilder("");
+        StringBuilder exceptionMessageBuilder = new StringBuilder("negatives not allowed: ");
+        boolean firstNegative = true;
+        for (int i = 0; i < 5; i++) {
+            int selector = (int) Math.random();
+            if (i != 0) {
+                if (selector % 3 == 0)
+                    inputBuilder.append(',');
+                else if (selector % 3 == 1)
+                    inputBuilder.append('\n');
+                else
+                    inputBuilder.append(';');
+            }
+            int number = i;
+            if (selector % 2 == 0) {
+                number *= -1;
+                if (!firstNegative)
+                    exceptionMessageBuilder.append(", ");
+                exceptionMessageBuilder.append(number);
+                firstNegative = false;
+            }
+            inputBuilder.append(number);
+        }
+        InvalidAdditionInputException exception = Assertions.assertThrows(InvalidAdditionInputException.class, () -> {
+            stringCalculator.Add(input);
+        });
+        Assertions.assertEquals(exceptionMessageBuilder.toString(), exception.getMessage());
     }
 }

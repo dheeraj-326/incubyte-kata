@@ -142,7 +142,7 @@ public class StringCalculatorTests {
 
     @Test
     public void testMultiCharacterDelimiters() throws InvalidAdditionInputException {
-        String input = "//;1;;2;1001;10";
+        String input = "//[;;]1;;2;;1001;;10";
         int expectedOutput = 13;
         Assertions.assertEquals(expectedOutput, stringCalculator.Add(input));
     }

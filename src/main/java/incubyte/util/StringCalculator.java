@@ -33,7 +33,7 @@ public class StringCalculator {
                 int number = Integer.parseInt(numbers);
                 if (number < 0)
                     throw new InvalidAdditionInputException("negatives not allowed: " + number);
-                sum = number;
+                sum = number > 1000 ? 0 : number;
             } catch (NumberFormatException ne) {
                 throw new InvalidAdditionInputException("InvalidInput: Not a number");
             }
@@ -43,6 +43,8 @@ public class StringCalculator {
             try {
                 for (String part : parts) {
                     int number = Integer.parseInt(part);
+                    if (number > 1000)
+                        continue;
                     if (number < 0) {
                         if (!firstNegative)
                             exceptionMessageBuilder.append(", ");

@@ -122,4 +122,14 @@ public class StringCalculatorTests {
         });
         Assertions.assertEquals(exceptionMessageBuilder.toString(), exception.getMessage());
     }
+
+    @Test
+    public void testCalledCount() throws InvalidAdditionInputException {
+        int previousCalledCount = stringCalculator.GetCalledCount();
+        int actualCalledCount = 5;
+        for (int i = 0; i < actualCalledCount; i++) {
+            stringCalculator.Add("1");
+        }
+        Assertions.assertEquals(actualCalledCount, stringCalculator.GetCalledCount() - previousCalledCount);
+    }
 }

@@ -11,6 +11,12 @@ public class StringCalculator {
     private final String defaultDelimiter = ",";
     private final String customDelimiterMarker = "//";
 
+    private static int calledCount;
+
+    public int GetCalledCount() {
+        return StringCalculator.calledCount;
+    }
+
     public int Add(String numbers) throws InvalidAdditionInputException {
         int sum = 0;
         StringBuilder exceptionMessageBuilder = null;

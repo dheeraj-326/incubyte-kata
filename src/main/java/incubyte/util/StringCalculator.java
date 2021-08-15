@@ -18,6 +18,7 @@ public class StringCalculator {
     }
 
     public int Add(String numbers) throws InvalidAdditionInputException {
+        StringCalculator.calledCount++;
         int sum = 0;
         StringBuilder exceptionMessageBuilder = null;
         if (numbers == null)

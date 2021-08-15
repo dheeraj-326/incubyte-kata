@@ -42,6 +42,8 @@ public class StringCalculator {
             boolean firstNegative = true;
             try {
                 for (String part : parts) {
+                    if (part.equals(""))
+                        continue;
                     int number = Integer.parseInt(part);
                     if (number > 1000)
                         continue;

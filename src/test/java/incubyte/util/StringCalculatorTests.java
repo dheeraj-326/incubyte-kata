@@ -132,4 +132,11 @@ public class StringCalculatorTests {
         }
         Assertions.assertEquals(actualCalledCount, stringCalculator.GetCalledCount() - previousCalledCount);
     }
+
+    @Test
+    public void testNumberGreaterThan1000() throws InvalidAdditionInputException {
+        String input = "1,2,1001,10";
+        int expectedOutput = 13;
+        Assertions.assertEquals(expectedOutput, stringCalculator.Add(input));
+    }
 }

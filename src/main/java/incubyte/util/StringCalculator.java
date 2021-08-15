@@ -2,6 +2,7 @@ package incubyte.util;
 
 import incubyte.exception.InvalidAdditionInputException;
 
+import java.sql.Array;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -26,11 +27,11 @@ public class StringCalculator {
         if (input == null)
             throw new InvalidAdditionInputException("InvalidInput: null");
         String[] inputParts = splitDelimiterAndInput(input);
-        String delimiter = parseCustomDelimiter(inputParts[0]);
+        ArrayList<String> delimiters = parseCustomDelimiters(inputParts[0]);
         String numbers = inputParts[1];
         if (numbers.isEmpty())
             sum = 0;
-        else if (!numbers.contains(delimiter)) {
+        else if (!delimiters.stream().anyMatch(delimiter -> numbers.contains(delimiter))) {
             try {
                 int number = Integer.parseInt(numbers);
                 if (number < 0)
@@ -40,7 +41,7 @@ public class StringCalculator {
                 throw new InvalidAdditionInputException("InvalidInput: Not a number");
             }
         } else {
-            List<String> parts = Arrays.asList(numbers.split(delimiter));
+            List<String> parts = splitByDelimiters(numbers, delimiters);
             boolean firstNegative = true;
             try {
                 for (String part : parts) {
@@ -68,14 +69,19 @@ public class StringCalculator {
         return sum;
     }
 
-    private List<String> splitByDelimiter(String input) {
-        String delimiter = defaultDelimiter;
-
-        if (input.startsWith("//")) {
-            delimiter = input.charAt(2) + "";
-            input = input.substring(3);
+    public List<String> splitByDelimiters(String numbers, ArrayList<String> delimiters) {
+        StringBuilder number = new StringBuilder("");
+        ArrayList<String> splitNumbers = new ArrayList<>();
+        StringBuilder delimiterRegex = new StringBuilder();
+        for (int i = 0; i < delimiters.size(); i++) {
+            String delimiter = delimiters.get(i);
+            if (i != 0)
+                delimiterRegex.append("|");
+            delimiterRegex.append("(");
+            delimiterRegex.append(delimiter);
+            delimiterRegex.append(")");
         }
-        return Arrays.asList(input.split(delimiter));
+        return Arrays.asList(numbers.split(delimiterRegex.toString()));
     }
 
     private String removeDelimiterMetaData(String input, String delimiter) {
@@ -94,7 +100,7 @@ public class StringCalculator {
         String delimiterPart = null;
         String inputPart = null;
         int delimiterBeginIndex = input.indexOf(multiDelimiterBegin);
-        int delimiterEndIndex = input.indexOf(multiDelimiterEnd);
+        int delimiterEndIndex = input.lastIndexOf(multiDelimiterEnd);
         if (delimiterBeginIndex != -1 && delimiterEndIndex != -1) {
             delimiterPart = input.substring(0, delimiterEndIndex + 1);
             inputPart = delimiterEndIndex == input.length() - 1 ? "" : input.substring(delimiterEndIndex + 1);
@@ -105,16 +111,26 @@ public class StringCalculator {
 
     }
 
-    private String parseCustomDelimiter(String input) {
+    private ArrayList<String> parseCustomDelimiters(String input) {
         String delimiter = null;
-        if (input == null)
-            return defaultDelimiter;
+        ArrayList<String> delimiters = new ArrayList<>();
+        if (input == null) {
+            delimiters.add(defaultDelimiter);
+            return delimiters;
+        }
         int delimiterBeginIndex = input.indexOf(multiDelimiterBegin);
         int delimiterEndIndex = input.indexOf(multiDelimiterEnd);
-        if (delimiterBeginIndex != -1 && delimiterEndIndex != -1)
-            delimiter = input.substring(delimiterBeginIndex + 1, delimiterEndIndex);
-        else
-            delimiter = input.charAt(2) + "";
-        return delimiter;
+        if (delimiterBeginIndex != -1 && delimiterEndIndex != -1) {
+            while (delimiterBeginIndex != -1 && delimiterEndIndex != -1) {
+                delimiter = input.substring(delimiterBeginIndex + 1, delimiterEndIndex);
+                delimiters.add(delimiter);
+                input = input.substring(delimiterEndIndex + 1);
+                delimiterBeginIndex = input.indexOf(multiDelimiterBegin);
+                delimiterEndIndex = input.indexOf(multiDelimiterEnd);
+            }
+        } else {
+            delimiters.add(input.charAt(2) + "");
+        }
+        return delimiters;
     }
 }

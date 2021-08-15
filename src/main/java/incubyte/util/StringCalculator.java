@@ -4,19 +4,24 @@ import incubyte.exception.InvalidAdditionInputException;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 
 public class StringCalculator {
 
-    private final String[] delimiters = new String[] { ",", "\n", ";" };
+    private final String defaultDelimiter = ",";
+    private final String customDelimiterMarker = "//";
 
     public int Add(String numbers) throws InvalidAdditionInputException {
         int sum = 0;
         StringBuilder exceptionMessageBuilder = null;
         if (numbers == null)
             throw new InvalidAdditionInputException("InvalidInput: null");
+        String delimiter = getCustomDelimiter(numbers);
+        numbers = removeDelimiterMetaData(numbers);
+        delimiter = delimiter == null ? defaultDelimiter : delimiter;
         if (numbers.isEmpty())
             sum = 0;
-        else if (!containsDelimiter(numbers)) {
+        else if (!numbers.contains(delimiter)) {
             try {
                 int number = Integer.parseInt(numbers);
                 if (number < 0)
@@ -26,7 +31,7 @@ public class StringCalculator {
                 throw new InvalidAdditionInputException("InvalidInput: Not a number");
             }
         } else {
-            ArrayList<String> parts = splitByDelimiter(numbers);
+            List<String> parts = Arrays.asList(numbers.split(delimiter));
             boolean firstNegative = true;
             try {
                 for (String part : parts) {
@@ -50,25 +55,32 @@ public class StringCalculator {
         return sum;
     }
 
-    private ArrayList<String> splitByDelimiter(String input) {
-        ArrayList<String> numbers = new ArrayList<>();
-        StringBuilder number = new StringBuilder("");
-        for (char character : input.toCharArray()) {
-            if (Arrays.stream(delimiters).anyMatch(delimiter -> Character.toString(character).equals(delimiter))) {
-                numbers.add(number.toString());
-                number = new StringBuilder("");
-            } else {
-                number.append(character);
-            }
+    private List<String> splitByDelimiter(String input) {
+        String delimiter = defaultDelimiter;
+
+        if (input.startsWith("//")) {
+            delimiter = input.charAt(2) + "";
+            input = input.substring(3);
         }
-        numbers.add(number.toString());
-        return numbers;
+        return Arrays.asList(input.split(delimiter));
     }
 
-    private boolean containsDelimiter(String input) {
-        for (String delimiter : delimiters)
-            if (input.contains(delimiter))
-                return true;
-        return false;
+    private String removeDelimiterMetaData(String input) {
+        if (input.contains(customDelimiterMarker) && input.length() < customDelimiterMarker.length() + 1)
+            return "";
+        if (input.contains(customDelimiterMarker))
+            return input.substring(customDelimiterMarker.length() + 1);
+        return input;
+
+    }
+
+    private String getCustomDelimiter(String input) {
+        String delimiter = null;
+        if (input.length() < customDelimiterMarker.length())
+            return null;
+        if (input.startsWith(customDelimiterMarker)) {
+            delimiter = input.charAt(2) + "";
+        }
+        return delimiter;
     }
 }

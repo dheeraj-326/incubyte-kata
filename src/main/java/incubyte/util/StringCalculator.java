@@ -10,6 +10,8 @@ public class StringCalculator {
 
     private final String defaultDelimiter = ",";
     private final String customDelimiterMarker = "//";
+    private final String multiDelimiterBegin = "[";
+    private final String multiDelimiterEnd = "]";
 
     private static int calledCount;
 
@@ -17,15 +19,15 @@ public class StringCalculator {
         return StringCalculator.calledCount;
     }
 
-    public int Add(String numbers) throws InvalidAdditionInputException {
+    public int Add(String input) throws InvalidAdditionInputException {
         StringCalculator.calledCount++;
         int sum = 0;
         StringBuilder exceptionMessageBuilder = null;
-        if (numbers == null)
+        if (input == null)
             throw new InvalidAdditionInputException("InvalidInput: null");
-        String delimiter = getCustomDelimiter(numbers);
-        numbers = removeDelimiterMetaData(numbers);
-        delimiter = delimiter == null ? defaultDelimiter : delimiter;
+        String[] inputParts = splitDelimiterAndInput(input);
+        String delimiter = parseCustomDelimiter(inputParts[0]);
+        String numbers = inputParts[1];
         if (numbers.isEmpty())
             sum = 0;
         else if (!numbers.contains(delimiter)) {
@@ -76,7 +78,7 @@ public class StringCalculator {
         return Arrays.asList(input.split(delimiter));
     }
 
-    private String removeDelimiterMetaData(String input) {
+    private String removeDelimiterMetaData(String input, String delimiter) {
         if (input.contains(customDelimiterMarker) && input.length() < customDelimiterMarker.length() + 1)
             return "";
         if (input.contains(customDelimiterMarker))
@@ -85,13 +87,34 @@ public class StringCalculator {
 
     }
 
-    private String getCustomDelimiter(String input) {
-        String delimiter = null;
-        if (input.length() < customDelimiterMarker.length())
-            return null;
-        if (input.startsWith(customDelimiterMarker)) {
-            delimiter = input.charAt(2) + "";
+    private String[] splitDelimiterAndInput(String input) {
+        if (input.length() < customDelimiterMarker.length() || !input.startsWith(customDelimiterMarker)) {
+            return new String[] { null, input };
         }
+        String delimiterPart = null;
+        String inputPart = null;
+        int delimiterBeginIndex = input.indexOf(multiDelimiterBegin);
+        int delimiterEndIndex = input.indexOf(multiDelimiterEnd);
+        if (delimiterBeginIndex != -1 && delimiterEndIndex != -1) {
+            delimiterPart = input.substring(0, delimiterEndIndex + 1);
+            inputPart = delimiterEndIndex == input.length() - 1 ? "" : input.substring(delimiterEndIndex + 1);
+            return new String[] { delimiterPart, inputPart };
+        } else {
+            return new String[] { input.substring(0, customDelimiterMarker.length() + 1), input.substring(customDelimiterMarker.length() + 1) };
+        }
+
+    }
+
+    private String parseCustomDelimiter(String input) {
+        String delimiter = null;
+        if (input == null)
+            return defaultDelimiter;
+        int delimiterBeginIndex = input.indexOf(multiDelimiterBegin);
+        int delimiterEndIndex = input.indexOf(multiDelimiterEnd);
+        if (delimiterBeginIndex != -1 && delimiterEndIndex != -1)
+            delimiter = input.substring(delimiterBeginIndex + 1, delimiterEndIndex);
+        else
+            delimiter = input.charAt(2) + "";
         return delimiter;
     }
 }
